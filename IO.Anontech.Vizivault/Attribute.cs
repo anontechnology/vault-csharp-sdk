@@ -22,6 +22,8 @@ namespace IO.Anontech.Vizivault {
 
     public List<string> Tags {get; set;}
 
+    public bool ReportOnly {get; set;}
+
     [JsonIgnore]
     public DateTime CreatedDate {get; set;}
 
