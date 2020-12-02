@@ -44,7 +44,7 @@ namespace IO.Anontech.Vizivault {
 
     /// <summary>
     /// Creates a new attribute of this entity.
-    /// To commit this change to the vault, it is necessary to call vault.save() afterwards.
+    /// To commit this change to the vault, it is necessary to call vault.Save() afterwards.
     /// </summary>
     /// <param name="attributeKey">The attribute name to add</param>
     /// <param name="value">The value of the named attribute</param>
@@ -59,7 +59,7 @@ namespace IO.Anontech.Vizivault {
 
     /// <summary>
     /// Creates a new attribute of this entity.
-    /// To commit this change to the vault, it is necessary to call vault.save() afterwards.
+    /// To commit this change to the vault, it is necessary to call vault.Save() afterwards.
     /// </summary>
     /// <param name="attribute">An attribute object containing the name and value of the attribute being added, along with optional metadata</param>
     public void AddAttribute(Attribute attribute) {
@@ -121,7 +121,7 @@ namespace IO.Anontech.Vizivault {
 
     /// <summary>
     /// Deletes an attribute of this entity.
-    /// To commit this change to the vault, it is necessary to call vault.save() afterwards.
+    /// To commit this change to the vault, it is necessary to call vault.Save() afterwards.
     /// </summary>
     /// <param name="attributeKey">The name of the attribute to delete</param>
     public void ClearAttribute(string attributeKey) {
