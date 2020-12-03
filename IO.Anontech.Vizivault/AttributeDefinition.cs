@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using IO.Anontech.Vizivault.Schema;
 
 namespace IO.Anontech.Vizivault {
 
+  /// <summary>
+  /// Defines metadata for all attributes with the same attribute name.
+  /// </summary>
   public class AttributeDefinition {
 
-    
+    /// <summary>
+    /// The name of this attribute definition.
+    /// </summary>
     public string Name {get; set;}
 
     public string Key {
@@ -23,24 +27,54 @@ namespace IO.Anontech.Vizivault {
 
     public AttributeDefinition() {
       Tags = new List<string>();
-      Schema = "string";
+      Schema = PrimitiveSchema.String;
     }
 
     public AttributeDefinition(string name) : this() {
       this.Name = name;
     }
 
+    /// <summary>
+    /// An example value this attribute can take.
+    /// </summary>
     public string Hint {get; set;}
+
+    /// <summary>
+    /// Whether one entity can have multiple values for this attribute.
+    /// </summary>
     public bool Repeatable {get; set;}
+
+    /// <summary>
+    /// Whether this attribute's value should be indexed to allow searching on it.
+    /// </summary>
     public bool Indexed {get; set;}
 
-    [JsonIgnore]
+    /// <summary>
+    /// When this attribute was created.
+    /// This property is maintained by the vault and does not usually need to be changed.
+    /// </summary>
     public DateTime CreatedDate {get; set;}
-    [JsonIgnore]
+    
+    /// <summary>
+    /// When this attribute was last modified.
+    /// This property is maintained by the vault and does not usually need to be changed.
+    /// </summary>
     public DateTime ModifiedDate {get; set;}
+
+    /// <summary>
+    /// A list of tags that should be applied to all attributes under this definition.
+    /// </summary>
     public List<string> Tags {get; set;}
+    
+    /// <summary>
+    /// A representation of the expected structure of this attribute's value.
+    /// </summary>
     public object Schema {get; private set;}
 
+    /// <summary>
+    /// Indicates that this attribute will be used to store simple, unstructured data.
+    /// </summary>
+    /// <param name="schema">The type of unstructured data to store</param>
     public void SetSchema(PrimitiveSchema schema) {
       this.Schema = schema;
     }
@@ -90,11 +124,16 @@ namespace IO.Anontech.Vizivault {
       return schemaObject;
     }
 
+    /// <summary>
+    /// Used to indicate that this attribute will store values of the specified type.
+    /// Autogenerates a schema object from the structure of the given type.
+    /// This should only be used for complex, structured data; for simpler data, use SetSchema(PrimitiveSchema)
+    /// </summary>
+    /// <param name="schemaClass">A type that values of this attribute will belong to</param>
     public void SchemaFromClass(Type schemaClass) {
       this.Schema = ConstructSchema(schemaClass);
     }
   }
 
-    // subattribute builder...?
-    // okay yeah we don't do the arbitrary setSchema, probably, instead there's methods for constructing a schema
+  // In the future, could also add methods allowing users to construct their own schema objects
 }

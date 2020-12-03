@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 
 namespace IO.Anontech.Vizivault {
+
+  /// <summary>
+  /// A set of criteria that can be used to filter data from the vault.
+  /// </summary>
   public class SearchRequest {
     public List<string> Regulations;
 
@@ -15,7 +19,15 @@ namespace IO.Anontech.Vizivault {
       }
     }
 
+    /// <summary>
+    /// A list of key-value pairs, used to search on exact values of attributes.
+    /// Note that only indexed attributes can be searched this way.
+    /// </summary>
     public List<ValueSearchRequest> Values {get; set;}
+
+    /// <summary>
+    /// A list of attribute names. The search query will return only attributes that have one of these names.
+    /// </summary>
     public List<string> Attributes {get; set;}
 
     public string Sensitivity {get; set;}

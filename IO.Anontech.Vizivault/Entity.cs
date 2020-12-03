@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace IO.Anontech.Vizivault {
 
+  /// <summary>
+  /// Represents an entity that has attributes stored in the vault.
+  /// </summary>
   public class Entity {
 
     private readonly Dictionary<string, Attribute> attributes;
@@ -13,9 +16,15 @@ namespace IO.Anontech.Vizivault {
     internal ISet<Attribute> ChangedAttributes {get;}
     internal ISet<string> DeletedAttributes {get;}
 
+    /// <summary>
+    /// A unique identifier for this entity, which is used to link it with its attributes.
+    /// </summary>
     [JsonPropertyName("id")]
     public string Id {get; set;}
 
+    /// <summary>
+    /// Tags that will be applied to all of this entity's attributes.
+    /// </summary>
     public List<string> Tags {get; set;}
 
     public Entity() {
@@ -33,6 +42,12 @@ namespace IO.Anontech.Vizivault {
       attributes.Clear();
     }
 
+    /// <summary>
+    /// Creates a new attribute of this entity.
+    /// To commit this change to the vault, it is necessary to call vault.Save() afterwards.
+    /// </summary>
+    /// <param name="attributeKey">The attribute name to add</param>
+    /// <param name="value">The value of the named attribute</param>
     public void AddAttribute(string attributeKey, object value) {
       Attribute attribute = new Attribute() {
         AttributeKey = attributeKey,
@@ -42,6 +57,11 @@ namespace IO.Anontech.Vizivault {
       AddAttribute(attribute);
     }
 
+    /// <summary>
+    /// Creates a new attribute of this entity.
+    /// To commit this change to the vault, it is necessary to call vault.Save() afterwards.
+    /// </summary>
+    /// <param name="attribute">An attribute object containing the name and value of the attribute being added, along with optional metadata</param>
     public void AddAttribute(Attribute attribute) {
       AddAttributeWithoutPendingChange(attribute);
       ChangedAttributes.Add(attribute);
@@ -60,6 +80,11 @@ namespace IO.Anontech.Vizivault {
       }
     }
 
+    /// <summary>
+    /// Gets a single-valued attribute from this entity
+    /// </summary>
+    /// <param name="attributeKey">The name of the attribute to retrieve</param>
+    /// <returns>An attribute of this entity with the specified name</returns>
     public Attribute GetAttribute(string attributeKey) {
       if(repeatedAttributes.ContainsKey(attributeKey)) {
         if(repeatedAttributes[attributeKey].Count == 1) {
@@ -71,6 +96,12 @@ namespace IO.Anontech.Vizivault {
       if(attributes.ContainsKey(attributeKey)) return attributes[attributeKey];
       return null;
     }
+
+    /// <summary>
+    /// Gets multiple values of a repeatable attribute from this entity
+    /// </summary>
+    /// <param name="attributeKey">The name of the attribute to retrieve</param>
+    /// <returns>A list containing all of this entity's attributes that match the given attribute name</returns>
     public List<Attribute> GetAttributes(string attributeKey) {
       if(attributes.ContainsKey(attributeKey)) {
         return new List<Attribute>{attributes[attributeKey]};
@@ -79,26 +110,31 @@ namespace IO.Anontech.Vizivault {
       }
     }
 
+    /// <summary>
+    /// A collection of all attributes of this entity
+    /// </summary>
     public IEnumerable<Attribute> Attributes {
       get {
         return repeatedAttributes.Values.AsEnumerable().Append(attributes.Values.ToList()).Aggregate(Enumerable.Empty<Attribute>(), (a, b) => a.Concat(b));
       }
     }
 
+    /// <summary>
+    /// Deletes an attribute of this entity.
+    /// To commit this change to the vault, it is necessary to call vault.Save() afterwards.
+    /// </summary>
+    /// <param name="attributeKey">The name of the attribute to delete</param>
     public void ClearAttribute(string attributeKey) {
       attributes.Remove(attributeKey);
       repeatedAttributes.Remove(attributeKey);
       DeletedAttributes.Add(attributeKey);
     }
 
-    // some methods that would be nice to have:
+    // potential future additions:
     // see if an attribute has multiple values
     // get an attribute as a string
     // get an attribute as a list of strings
     // get an attribute as a list of objects
-
-    // auto-create an attribute schema from an object might be useful? can copy LAVHA code for that
-
     // need to figure out how to represent "add this value" vs "overwrite this value" in the context of repeatable attributes
   }
 }

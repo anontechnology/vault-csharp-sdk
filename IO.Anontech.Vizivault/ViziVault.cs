@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace IO.Anontech.Vizivault {
 
+  /// <summary>
+  /// The central class for the ViziVault C# client. Provides an abstraction layer for accessing the ViziVault API.
+  /// </summary>
   public class ViziVault {
     
     private Uri baseUrl;
