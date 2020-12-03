@@ -157,10 +157,9 @@ namespace IO.Anontech.Vizivault {
     /// <summary>
     /// Deletes all attributes for an entity or user.
     /// </summary>
-    /// <param name="entity">An entity or user object whose attributes should be deleted</param>
-    public async Task PurgeAsync(Entity entity) {
-      await Delete($"/users/{entity.Id}/data");
-      entity.Purge();
+    /// <param name="entity">The id of the user or entity to delete</param>
+    public async Task PurgeAsync(string userid) {
+      await Delete($"/users/{userid}/data");
     }
 
     /// <summary>
