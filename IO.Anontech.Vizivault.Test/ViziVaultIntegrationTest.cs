@@ -21,7 +21,7 @@ namespace IO.Anontech.Vizivault.Test {
 
     [Fact]
     public async Task RoundTripData() {
-      ViziVault vault = new ViziVault().WithBaseUrl(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       // Create two attributes
       AttributeDefinition attributeDef1 = new AttributeDefinition("TestAttribute1");
@@ -58,13 +58,13 @@ namespace IO.Anontech.Vizivault.Test {
         Assert.Null(receivedUserAfterDeletion.GetAttribute(attributeDef1.Name));
 
       } finally {
-        await vault.PurgeAsync(sentUser);
+        await vault.PurgeAsync(sentUser.Id);
       }
     }
 
     [Fact]
     public async Task TestSearch() {
-      ViziVault vault = new ViziVault().WithBaseUrl(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       // Create two attributes
       AttributeDefinition attributeDef1 = new AttributeDefinition("TestAttribute1") {
@@ -106,14 +106,14 @@ namespace IO.Anontech.Vizivault.Test {
           }
         );
       } finally {
-        await vault.PurgeAsync(user1);
-        await vault.PurgeAsync(user2);
+        await vault.PurgeAsync(user1.Id);
+        await vault.PurgeAsync(user2.Id);
       }
     }
 
     [Fact]
     public async Task TestGetAttributeByDatapointId() {
-      ViziVault vault = new ViziVault().WithBaseUrl(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       AttributeDefinition attributeDef = new AttributeDefinition("TestAttribute1");
       await vault.StoreAttributeDefinitionAsync(attributeDef);
@@ -130,14 +130,14 @@ namespace IO.Anontech.Vizivault.Test {
         Assert.Equal(first.GetValueAs<string>(), second.GetValueAs<string>());
 
       } finally {
-        await vault.PurgeAsync(sentUser);
+        await vault.PurgeAsync(sentUser.Id);
       }
     }
 
     
     [Fact]
     public async Task TestTags() {
-      ViziVault vault = new ViziVault().WithBaseUrl(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       AttributeDefinition attributeDef1 = new AttributeDefinition("TestAttribute1") {
         Tags = new List<string>{"tag1"}
@@ -189,13 +189,13 @@ namespace IO.Anontech.Vizivault.Test {
         Assert.DoesNotContain(allTags, (tag) => tag.Name.Equals("tag5"));
         
       } finally {
-        await vault.PurgeAsync(sentUser);
+        await vault.PurgeAsync(sentUser.Id);
       }
     }
 
     [Fact]
     public async Task TestRegulations() {
-      ViziVault vault = new ViziVault().WithBaseUrl(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       Regulation regulation = new Regulation() {
         Name = "Regulation Name",
@@ -225,7 +225,7 @@ namespace IO.Anontech.Vizivault.Test {
 
     [Fact]
     public async Task TestAttributeDefinitions() {
-      ViziVault vault = new ViziVault().WithBaseUrl(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       AttributeDefinition attributeDef = new AttributeDefinition("TestAttribute1") {
         Indexed = true
