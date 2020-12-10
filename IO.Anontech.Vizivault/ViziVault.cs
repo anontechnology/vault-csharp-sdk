@@ -35,8 +35,9 @@ namespace IO.Anontech.Vizivault {
       options =  new JsonSerializerOptions {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         Converters = {
-          new JsonStringEnumConverter()
-        }
+          new JsonStringEnumConverter(),
+          new DateTimeConverter()
+        },
       };
     }
 
