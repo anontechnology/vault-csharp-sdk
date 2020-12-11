@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Peter Wood</Authors>
+    <PackageId>Anontech-Vizivault-Client</PackageId>
+    <Title>ViziVault C# Client</Title>
+    <Company>Anon Technologies</Company>
+    <Description>C# bindings for AnonTech's ViziVault system</Description>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="4.7.2"/>
