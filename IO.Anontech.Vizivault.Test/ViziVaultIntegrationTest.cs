@@ -34,7 +34,7 @@ namespace IO.Anontech.Vizivault.Test {
       
       // Add values of both attributes
       User sentUser = new User("exampleUser");
-      Attribute attribute1 = new Attribute(attributeDef1.Name) {
+      AttributeValue attribute1 = new AttributeValue(attributeDef1.Name) {
         Value = "exampleUser's first name"
       };
       
@@ -89,7 +89,7 @@ namespace IO.Anontech.Vizivault.Test {
         searchRequest.AddValueQuery(attributeDef1.Name, "common first name");
         searchRequest.Attributes = new List<string>{attributeDef2.Name};
 
-        List<Attribute> results = await vault.SearchAsync(searchRequest, 0, 10);
+        List<AttributeValue> results = await vault.SearchAsync(searchRequest, 0, 10);
         Assert.Equal(3, results.Count);
         Assert.Collection(results,
           (result) => {
@@ -125,8 +125,8 @@ namespace IO.Anontech.Vizivault.Test {
         await vault.SaveAsync(sentUser);
 
         User receivedUser = await vault.FindByUserAsync(sentUser.Id);
-        Attribute first = receivedUser.GetAttribute(attributeDef.Name);
-        Attribute second = await vault.GetDataPointAsync(receivedUser.GetAttribute(attributeDef.Name).DataPointId);
+        AttributeValue first = receivedUser.GetAttribute(attributeDef.Name);
+        AttributeValue second = await vault.GetDataPointAsync(receivedUser.GetAttribute(attributeDef.Name).DataPointId);
         Assert.Equal(first.GetValueAs<string>(), second.GetValueAs<string>());
 
       } finally {
@@ -149,14 +149,14 @@ namespace IO.Anontech.Vizivault.Test {
       };
 
       try {
-        Attribute attribute1 = new Attribute(attributeDef1.Name) {
+        AttributeValue attribute1 = new AttributeValue(attributeDef1.Name) {
           Value = "exampleUser's first name",
           Tags = new List<string>{"tag3"},
         };
         sentUser.AddAttribute(attribute1);
         await vault.SaveAsync(sentUser);
 
-        Attribute receivedAttribute = (await vault.FindByUserAsync("exampleUser")).GetAttribute(attributeDef1.Name);
+        AttributeValue receivedAttribute = (await vault.FindByUserAsync("exampleUser")).GetAttribute(attributeDef1.Name);
         Assert.Collection(receivedAttribute.Tags,
           (tag) => Assert.Equal("tag1", tag),
           (tag) => Assert.Equal("tag2", tag),

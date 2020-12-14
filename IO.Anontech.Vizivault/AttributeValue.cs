@@ -8,7 +8,7 @@ namespace IO.Anontech.Vizivault {
   /// <summary>
   /// Represents one piece of information stored in the vault.
   /// </summary>
-  public class Attribute {
+  public class AttributeValue {
 
     /// <summary>
     /// A unique identifier for this attribute
@@ -58,12 +58,12 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     public DateTime ModifiedDate {get; internal set;}
 
-    internal Attribute() {
+    internal AttributeValue() {
       Regulations = new List<string>();
       Tags = new List<string>();
     }
     
-    public Attribute(string attributeDefName) : this() {
+    public AttributeValue(string attributeDefName) : this() {
       AttributeKey = attributeDefName;
     }
 

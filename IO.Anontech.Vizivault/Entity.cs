@@ -10,10 +10,10 @@ namespace IO.Anontech.Vizivault {
   /// </summary>
   public class Entity {
 
-    private readonly Dictionary<string, Attribute> attributes;
-    private readonly Dictionary<string, List<Attribute>> repeatedAttributes;
+    private readonly Dictionary<string, AttributeValue> attributes;
+    private readonly Dictionary<string, List<AttributeValue>> repeatedAttributes;
 
-    internal ISet<Attribute> ChangedAttributes {get;}
+    internal ISet<AttributeValue> ChangedAttributes {get;}
     internal ISet<string> DeletedAttributes {get;}
 
     /// <summary>
@@ -28,10 +28,10 @@ namespace IO.Anontech.Vizivault {
     public List<string> Tags {get; set;}
 
     public Entity() {
-      ChangedAttributes = new HashSet<Attribute>();
+      ChangedAttributes = new HashSet<AttributeValue>();
       DeletedAttributes = new HashSet<string>();
-      attributes = new Dictionary<string, Attribute>();
-      repeatedAttributes = new Dictionary<string, List<Attribute>>();
+      attributes = new Dictionary<string, AttributeValue>();
+      repeatedAttributes = new Dictionary<string, List<AttributeValue>>();
     }
 
     public Entity(string id) : this() {
@@ -49,7 +49,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="attributeKey">The attribute name to add</param>
     /// <param name="value">The value of the named attribute</param>
     public void AddAttribute(string attributeKey, object value) {
-      Attribute attribute = new Attribute() {
+      AttributeValue attribute = new AttributeValue() {
         AttributeKey = attributeKey,
         Value = value
       };
@@ -62,17 +62,17 @@ namespace IO.Anontech.Vizivault {
     /// To commit this change to the vault, it is necessary to call vault.Save() afterwards.
     /// </summary>
     /// <param name="attribute">An attribute object containing the name and value of the attribute being added, along with optional metadata</param>
-    public void AddAttribute(Attribute attribute) {
+    public void AddAttribute(AttributeValue attribute) {
       AddAttributeWithoutPendingChange(attribute);
       ChangedAttributes.Add(attribute);
     }
 
-    internal void AddAttributeWithoutPendingChange(Attribute attribute) {
+    internal void AddAttributeWithoutPendingChange(AttributeValue attribute) {
       string attributeKey = attribute.AttributeKey;
       if(repeatedAttributes.ContainsKey(attributeKey)){
         repeatedAttributes[attributeKey].Add(attribute);
       } else if(attributes.ContainsKey(attributeKey)) {
-        List<Attribute> repeatableValues = new List<Attribute> { attributes[attributeKey], attribute };
+        List<AttributeValue> repeatableValues = new List<AttributeValue> { attributes[attributeKey], attribute };
         attributes.Remove(attributeKey);
         repeatedAttributes[attributeKey] = repeatableValues;
       } else {
@@ -85,7 +85,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <param name="attributeKey">The name of the attribute to retrieve</param>
     /// <returns>An attribute of this entity with the specified name</returns>
-    public Attribute GetAttribute(string attributeKey) {
+    public AttributeValue GetAttribute(string attributeKey) {
       if(repeatedAttributes.ContainsKey(attributeKey)) {
         if(repeatedAttributes[attributeKey].Count == 1) {
           return repeatedAttributes[attributeKey][0];
@@ -102,9 +102,9 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <param name="attributeKey">The name of the attribute to retrieve</param>
     /// <returns>A list containing all of this entity's attributes that match the given attribute name</returns>
-    public List<Attribute> GetAttributes(string attributeKey) {
+    public List<AttributeValue> GetAttributes(string attributeKey) {
       if(attributes.ContainsKey(attributeKey)) {
-        return new List<Attribute>{attributes[attributeKey]};
+        return new List<AttributeValue>{attributes[attributeKey]};
       } else {
         return repeatedAttributes[attributeKey];
       }
@@ -113,9 +113,9 @@ namespace IO.Anontech.Vizivault {
     /// <summary>
     /// A collection of all attributes of this entity
     /// </summary>
-    public IEnumerable<Attribute> Attributes {
+    public IEnumerable<AttributeValue> Attributes {
       get {
-        return repeatedAttributes.Values.AsEnumerable().Append(attributes.Values.ToList()).Aggregate(Enumerable.Empty<Attribute>(), (a, b) => a.Concat(b));
+        return repeatedAttributes.Values.AsEnumerable().Append(attributes.Values.ToList()).Aggregate(Enumerable.Empty<AttributeValue>(), (a, b) => a.Concat(b));
       }
     }
 

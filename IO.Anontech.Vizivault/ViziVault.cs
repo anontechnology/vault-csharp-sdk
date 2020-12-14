@@ -114,9 +114,9 @@ namespace IO.Anontech.Vizivault {
     /// <param name="entityId">The id of the entity to retrieve</param>
     /// <returns>An Entity object containing entity-level metadata and a list of attributes</returns>
     public async Task<Entity> FindByEntityAsync(string entityId) {
-      List<Attribute> data = await Get<List<Attribute>>($"/entities/{entityId}/attributes");
+      List<AttributeValue> data = await Get<List<AttributeValue>>($"/entities/{entityId}/attributes");
       Entity entity = await Get<Entity>($"/entities/{entityId}");
-      foreach(Attribute attr in data) {
+      foreach(AttributeValue attr in data) {
         entity.AddAttributeWithoutPendingChange(attr);
       }
       return entity;
@@ -128,9 +128,9 @@ namespace IO.Anontech.Vizivault {
     /// <param name="userid">The id of the user to retrieve</param>
     /// <returns>A User object containing user-level metadata and a list of attributes</returns>
     public async Task<User> FindByUserAsync(string userId) {
-      List<Attribute> data = await Get<List<Attribute>>($"/users/{userId}/attributes");
+      List<AttributeValue> data = await Get<List<AttributeValue>>($"/users/{userId}/attributes");
       User entity = await Get<User>($"/users/{userId}");
-      foreach(Attribute attr in data) {
+      foreach(AttributeValue attr in data) {
         entity.AddAttributeWithoutPendingChange(attr);
       }
       return entity;
@@ -149,7 +149,7 @@ namespace IO.Anontech.Vizivault {
 
       if(entity.ChangedAttributes.Count > 0) {
         StorageRequest request = new StorageRequest {
-          Data = new List<Attribute>(entity.ChangedAttributes)
+          Data = new List<AttributeValue>(entity.ChangedAttributes)
         };
 
         await Post($"/users/{entity.Id}/attributes", request);
@@ -277,8 +277,8 @@ namespace IO.Anontech.Vizivault {
     /// <param name="page">The index of the page to retrieve</param>
     /// <param name="count">How many results each page should consist of</param>
     /// <returns>One page of the list of matching attributes</returns>
-    public async Task<List<Attribute>> SearchAsync(SearchRequest searchRequest, int page, int count){
-      return await PostAndReturn<PaginatedSearchRequest, List<Attribute>>("/search", new PaginatedSearchRequest{Query = searchRequest, Page = page, Count = count});
+    public async Task<List<AttributeValue>> SearchAsync(SearchRequest searchRequest, int page, int count){
+      return await PostAndReturn<PaginatedSearchRequest, List<AttributeValue>>("/search", new PaginatedSearchRequest{Query = searchRequest, Page = page, Count = count});
     }
 
     /// <summary>
@@ -286,8 +286,8 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <param name="dataPointId">The datapoint id of the attribute to retrieve</param>
     /// <returns>An attribute with the specified datapoint id, if one exists</returns>
-    public async Task<Attribute> GetDataPointAsync(string dataPointId) {
-      return await Get<Attribute>($"/data/{dataPointId}");
+    public async Task<AttributeValue> GetDataPointAsync(string dataPointId) {
+      return await Get<AttributeValue>($"/data/{dataPointId}");
     }
   }
 }
