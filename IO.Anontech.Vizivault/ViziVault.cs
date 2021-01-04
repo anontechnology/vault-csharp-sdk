@@ -114,8 +114,8 @@ namespace IO.Anontech.Vizivault {
     /// <param name="entityId">The id of the entity to retrieve</param>
     /// <returns>An Entity object containing entity-level metadata and a list of attributes</returns>
     public async Task<Entity> FindByEntityAsync(string entityId) {
-      List<AttributeValue> data = await Get<List<AttributeValue>>($"/entities/{entityId}/attributes");
-      Entity entity = await Get<Entity>($"/entities/{entityId}");
+      List<AttributeValue> data = await Get<List<AttributeValue>>($"entities/{entityId}/attributes");
+      Entity entity = await Get<Entity>($"entities/{entityId}");
       foreach(AttributeValue attr in data) {
         entity.AddAttributeWithoutPendingChange(attr);
       }
@@ -128,8 +128,8 @@ namespace IO.Anontech.Vizivault {
     /// <param name="userid">The id of the user to retrieve</param>
     /// <returns>A User object containing user-level metadata and a list of attributes</returns>
     public async Task<User> FindByUserAsync(string userId) {
-      List<AttributeValue> data = await Get<List<AttributeValue>>($"/users/{userId}/attributes");
-      User entity = await Get<User>($"/users/{userId}");
+      List<AttributeValue> data = await Get<List<AttributeValue>>($"users/{userId}/attributes");
+      User entity = await Get<User>($"users/{userId}");
       foreach(AttributeValue attr in data) {
         entity.AddAttributeWithoutPendingChange(attr);
       }
@@ -142,17 +142,17 @@ namespace IO.Anontech.Vizivault {
     /// <param name="entity">An entity or user object that has been modified locally</param>
     public async Task SaveAsync(Entity entity) {
       
-      await Task.WhenAll(from attribute in entity.DeletedAttributes select Delete($"/users/{entity.Id}/attributes/{attribute}"));
+      await Task.WhenAll(from attribute in entity.DeletedAttributes select Delete($"users/{entity.Id}/attributes/{attribute}"));
       entity.DeletedAttributes.Clear();
 
-      await Post(entity is User ? "/users" : "/entities", new EntityDefinition(entity));
+      await Post(entity is User ? "users" : "entities", new EntityDefinition(entity));
 
       if(entity.ChangedAttributes.Count > 0) {
         StorageRequest request = new StorageRequest {
           Data = new List<AttributeValue>(entity.ChangedAttributes)
         };
 
-        await Post($"/users/{entity.Id}/attributes", request);
+        await Post($"users/{entity.Id}/attributes", request);
         entity.ChangedAttributes.Clear();
       }
 
@@ -163,7 +163,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <param name="entity">The id of the user or entity to delete</param>
     public async Task PurgeAsync(string userid) {
-      await Delete($"/users/{userid}/data");
+      await Delete($"users/{userid}/data");
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <param name="attributeDefinition">An attribute definition, which will be saved in the vault</param>
     public async Task StoreAttributeDefinitionAsync(AttributeDefinition attributeDefinition) {
-      await Post("/attributes", attributeDefinition);
+      await Post("attributes", attributeDefinition);
     }
 
     /// <summary>
@@ -180,7 +180,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="attributeKey">The name of the attribute definition to retrieve</param>
     /// <returns>An attribute definition with the requested name, if one exists</returns>
     public async Task<AttributeDefinition> GetAttributeDefinitionAsync(string attributeKey) {
-      return await Get<AttributeDefinition>($"/attributes/{attributeKey}");
+      return await Get<AttributeDefinition>($"attributes/{attributeKey}");
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <returns>A list containing all attribute definitions that exist in the vault</returns>
     public async Task<List<AttributeDefinition>> GetAttributeDefinitionsAsync() {
-      return await Get<List<AttributeDefinition>>("/attributes/");
+      return await Get<List<AttributeDefinition>>("attributes/");
     }
 
     /// <summary>
@@ -196,7 +196,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <param name="tag">A tag metadata object, which will be saved in the vault</param>
     public async Task StoreTagAsync(Tag tag) {
-      await Post("/tags", tag);
+      await Post("tags", tag);
     }
 
     /// <summary>
@@ -205,7 +205,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="tag">The name of the tag to retrieve</param>
     /// <returns>A tag with the requested name, if one exists</returns>
     public async Task<Tag> GetTagAsync(string tag) {
-      return await Get<Tag>($"/tags/{tag}");
+      return await Get<Tag>($"tags/{tag}");
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <returns>A list containing all tags that exist in the vault</returns>
     public async Task<List<Tag>> GetTagsAsync() {
-      return await Get<List<Tag>>("/tags");
+      return await Get<List<Tag>>("tags");
     }
 
     /// <summary>
@@ -223,7 +223,7 @@ namespace IO.Anontech.Vizivault {
     /// <returns>A boolean value representing whether the tag was deleted successfully</returns>
     public async Task<bool> DeleteTagAsync(String tag) {
       try{
-        await Delete($"/tags/{tag}");
+        await Delete($"tags/{tag}");
         return true;
       } catch(VaultResponseException) {
         return false;
@@ -235,7 +235,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <param name="regulation">A regulation metadata object, which will be saved in the vault</param>
     public async Task StoreRegulationAsync(Regulation regulation) {
-      await Post("/regulations", regulation);
+      await Post("regulations", regulation);
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="regulation">The name of the regulation to retrieve</param>
     /// <returns>A regulation with the requested name, if one exists</returns>
     public async Task<Regulation> GetRegulationAsync(string regulation) {
-      return await Get<Regulation>($"/regulations/{regulation}");
+      return await Get<Regulation>($"regulations/{regulation}");
     }
 
     /// <summary>
@@ -252,7 +252,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <returns>A list containing all regulations that exist in the vault</returns>
     public async Task<List<Regulation>> GetRegulationsAsync() {
-      return await Get<List<Regulation>>("/regulations");
+      return await Get<List<Regulation>>("regulations");
     }
 
     /// <summary>
@@ -262,7 +262,7 @@ namespace IO.Anontech.Vizivault {
     /// <returns>A boolean value representing whether the regulation was deleted successfully</returns>
     public async Task<bool> DeleteRegulationAsync(String regulation) {
       try{
-        await Delete($"/regulations/{regulation}");
+        await Delete($"regulations/{regulation}");
         return true;
       } catch(VaultResponseException) {
         return false;
@@ -278,7 +278,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="count">How many results each page should consist of</param>
     /// <returns>One page of the list of matching attributes</returns>
     public async Task<List<AttributeValue>> SearchAsync(SearchRequest searchRequest, int page, int count){
-      return await PostAndReturn<PaginatedSearchRequest, List<AttributeValue>>("/search", new PaginatedSearchRequest{Query = searchRequest, Page = page, Count = count});
+      return await PostAndReturn<PaginatedSearchRequest, List<AttributeValue>>("search", new PaginatedSearchRequest{Query = searchRequest, Page = page, Count = count});
     }
 
     /// <summary>
@@ -287,7 +287,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="dataPointId">The datapoint id of the attribute to retrieve</param>
     /// <returns>An attribute with the specified datapoint id, if one exists</returns>
     public async Task<AttributeValue> GetDataPointAsync(string dataPointId) {
-      return await Get<AttributeValue>($"/data/{dataPointId}");
+      return await Get<AttributeValue>($"data/{dataPointId}");
     }
   }
 }
