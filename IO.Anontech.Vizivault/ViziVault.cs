@@ -29,6 +29,9 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     public ViziVault(Uri url) {
       httpClient = new HttpClient();
+      if(!url.ToString().EndsWith("/")) {
+         url = new Uri(url + "/");
+      }
       baseUrl = url;
       headers = httpClient.DefaultRequestHeaders;
       
@@ -71,8 +74,12 @@ namespace IO.Anontech.Vizivault {
       return this;
     }
 
+    private Uri ToFullUrl(string url) {
+      return new Uri(baseUrl, url);
+    }
+
     private async Task<T> Get<T>(string url){
-      HttpResponseMessage response = await httpClient.GetAsync(baseUrl + url);
+      HttpResponseMessage response = await httpClient.GetAsync(ToFullUrl(url));
       if(!response.IsSuccessStatusCode) {
         ApiError error = JsonSerializer.Deserialize<ApiError>(await response.Content.ReadAsStringAsync(), options);
         throw new VaultResponseException(error.Message, response.StatusCode);
@@ -82,7 +89,7 @@ namespace IO.Anontech.Vizivault {
     }
 
     private async Task Delete(string url){
-      HttpResponseMessage response = await httpClient.DeleteAsync(baseUrl + url);
+      HttpResponseMessage response = await httpClient.DeleteAsync(ToFullUrl(url));
       if(!response.IsSuccessStatusCode) {
         ApiError error = JsonSerializer.Deserialize<ApiError>(await response.Content.ReadAsStringAsync(), options);
         throw new VaultResponseException(error.Message, response.StatusCode);
@@ -91,7 +98,7 @@ namespace IO.Anontech.Vizivault {
 
     private async Task Post<I>(string url, I body){
       string requestBody = JsonSerializer.Serialize<object>(body, options); // Polymorphism necessitates Serialize<object>
-      HttpResponseMessage response = await httpClient.PostAsync(baseUrl + url, new StringContent(requestBody, Encoding.UTF8, "application/json"));
+      HttpResponseMessage response = await httpClient.PostAsync(ToFullUrl(url), new StringContent(requestBody, Encoding.UTF8, "application/json"));
       if(!response.IsSuccessStatusCode) {
         string content = await response.Content.ReadAsStringAsync();
         ApiError error = JsonSerializer.Deserialize<ApiError>(content, options);
@@ -100,7 +107,7 @@ namespace IO.Anontech.Vizivault {
     }
     
     private async Task<O> PostAndReturn<I, O>(string url, I body){
-      HttpResponseMessage response = await httpClient.PostAsync(baseUrl + url, new StringContent(JsonSerializer.Serialize<object>(body, options), Encoding.UTF8, "application/json"));
+      HttpResponseMessage response = await httpClient.PostAsync(ToFullUrl(url), new StringContent(JsonSerializer.Serialize<object>(body, options), Encoding.UTF8, "application/json"));
       if(!response.IsSuccessStatusCode) {
         ApiError error = JsonSerializer.Deserialize<ApiError>(await response.Content.ReadAsStringAsync(), options);
         throw new VaultResponseException(error.Message, response.StatusCode);
