@@ -13,6 +13,10 @@ namespace IO.Anontech.Vizivault.Test {
 
     string decryptionKey;
 
+    string baseUrl = "http://localhost:8083";
+
+    string apiKey = "aaa";
+
     public ViziVaultIntegrationTest () {
       
       decryptionKey = System.IO.File.ReadAllText(@"..\..\..\decryptionKey.txt");
@@ -21,7 +25,7 @@ namespace IO.Anontech.Vizivault.Test {
 
     [Fact]
     public async Task RoundTripData() {
-      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri(baseUrl)).WithApiKey(apiKey).WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       // Create two attributes
       AttributeDefinition attributeDef1 = new AttributeDefinition("TestAttribute1");
@@ -64,7 +68,7 @@ namespace IO.Anontech.Vizivault.Test {
 
     [Fact]
     public async Task TestSearch() {
-      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri(baseUrl)).WithApiKey(apiKey).WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       // Create two attributes
       AttributeDefinition attributeDef1 = new AttributeDefinition("TestAttribute1") {
@@ -91,19 +95,14 @@ namespace IO.Anontech.Vizivault.Test {
 
         List<AttributeValue> results = await vault.SearchAsync(searchRequest, 0, 10);
         Assert.Equal(3, results.Count);
-        Assert.Collection(results,
-          (result) => {
-            Assert.Equal(attributeDef1.Name, result.AttributeKey);
-            Assert.Equal(user1.Id, result.UserId);
-          },
-          (result) => {
-            Assert.Equal(attributeDef1.Name, result.AttributeKey);
-            Assert.Equal(user2.Id, result.UserId);
-          },
-          (result) => {
-            Assert.Equal(attributeDef2.Name, result.AttributeKey);
-            Assert.Equal(user2.Id, result.UserId);
-          }
+        Assert.Contains(results,
+          (result) => attributeDef1.Name.Equals(result.AttributeKey) && user1.Id.Equals(result.UserId)
+        );
+        Assert.Contains(results,
+          (result) => attributeDef1.Name.Equals(result.AttributeKey) && user2.Id.Equals(result.UserId)
+        );
+        Assert.Contains(results,
+          (result) => attributeDef2.Name.Equals(result.AttributeKey) && user2.Id.Equals(result.UserId)
         );
       } finally {
         await vault.PurgeAsync(user1.Id);
@@ -113,7 +112,7 @@ namespace IO.Anontech.Vizivault.Test {
 
     [Fact]
     public async Task TestGetAttributeByDatapointId() {
-      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri(baseUrl)).WithApiKey(apiKey).WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       AttributeDefinition attributeDef = new AttributeDefinition("TestAttribute1");
       await vault.StoreAttributeDefinitionAsync(attributeDef);
@@ -137,7 +136,7 @@ namespace IO.Anontech.Vizivault.Test {
     
     [Fact]
     public async Task TestTags() {
-      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri(baseUrl)).WithApiKey(apiKey).WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       AttributeDefinition attributeDef1 = new AttributeDefinition("TestAttribute1") {
         Tags = new List<string>{"tag1"}
@@ -166,12 +165,11 @@ namespace IO.Anontech.Vizivault.Test {
         Tag tag4 = new Tag("tag4");
         await vault.StoreTagAsync(tag4);
 
-        Assert.Collection(await vault.GetTagsAsync(),
-          (tag) => Assert.Equal("tag1", tag.Name),
-          (tag) => Assert.Equal("tag2", tag.Name),
-          (tag) => Assert.Equal("tag3", tag.Name),
-          (tag) => Assert.Equal("tag4", tag.Name)
-        );
+        List<Tag> allTags = await vault.GetTagsAsync();
+        Assert.Contains(allTags, (tag) => tag.Name.Equals("tag1"));
+        Assert.Contains(allTags, (tag) => tag.Name.Equals("tag2"));
+        Assert.Contains(allTags, (tag) => tag.Name.Equals("tag3"));
+        Assert.Contains(allTags, (tag) => tag.Name.Equals("tag4"));
 
         await vault.DeleteTagAsync("tag1");
         await vault.DeleteTagAsync("tag2");
@@ -181,7 +179,7 @@ namespace IO.Anontech.Vizivault.Test {
         //Assert.Throws<VaultResponseException>(() => vault.GetTagAsync("tag5").Result);
         Assert.False(await vault.DeleteTagAsync("tag5"));
 
-        List<Tag> allTags = await vault.GetTagsAsync();
+        allTags = await vault.GetTagsAsync();
         Assert.DoesNotContain(allTags, (tag) => tag.Name.Equals("tag1"));
         Assert.DoesNotContain(allTags, (tag) => tag.Name.Equals("tag2"));
         Assert.DoesNotContain(allTags, (tag) => tag.Name.Equals("tag3"));
@@ -195,7 +193,7 @@ namespace IO.Anontech.Vizivault.Test {
 
     [Fact]
     public async Task TestRegulations() {
-      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri(baseUrl)).WithApiKey(apiKey).WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       Regulation regulation = new Regulation() {
         Name = "Regulation Name",
@@ -225,7 +223,7 @@ namespace IO.Anontech.Vizivault.Test {
 
     [Fact]
     public async Task TestAttributeDefinitions() {
-      ViziVault vault = new ViziVault(new Uri("http://localhost:8083")).WithApiKey("aaa").WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
+      ViziVault vault = new ViziVault(new Uri(baseUrl)).WithApiKey(apiKey).WithDecryptionKey(decryptionKey).WithEncryptionKey(encryptionKey);
 
       AttributeDefinition attributeDef = new AttributeDefinition("TestAttribute1") {
         Indexed = true
