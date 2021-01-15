@@ -144,6 +144,16 @@ namespace IO.Anontech.Vizivault {
     }
 
     /// <summary>
+    /// Retrieves all values of the specified attribute that the user with the specified ID has.
+    /// </summary>
+    /// <param name="userId"> The ID of the user to retrieve <param>
+    /// <param name="attribute"> The attribute to retrieve </param>
+    /// <returns> A list of matching attributes </returns>
+    public async Task<List<AttributeValue>> GetUserAttributeAsync(string userId, string attribute) {
+      return await Get<List<AttributeValue>>($"users/{userId}/attributes/{attribute}");
+    }
+
+    /// <summary>
     /// Commits changes that have been made to an entity or user object. This includes adding attributes, deleting attributes, and updating entity-level metadata.
     /// </summary>
     /// <param name="entity">An entity or user object that has been modified locally</param>
