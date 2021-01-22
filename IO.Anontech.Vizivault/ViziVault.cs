@@ -121,6 +121,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="entityId">The id of the entity to retrieve</param>
     /// <returns>An Entity object containing entity-level metadata and a list of attributes</returns>
     public async Task<Entity> FindByEntityAsync(string entityId) {
+      if(!headers.Contains("X-Decryption-Key")) throw new InvalidOperationException("Cannot access entity data, as decryption key has not been set");
       List<AttributeValue> data = await Get<List<AttributeValue>>($"entities/{entityId}/attributes");
       Entity entity = await Get<Entity>($"entities/{entityId}");
       foreach(AttributeValue attr in data) {
@@ -135,6 +136,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="userid">The id of the user to retrieve</param>
     /// <returns>A User object containing user-level metadata and a list of attributes</returns>
     public async Task<User> FindByUserAsync(string userId) {
+      if(!headers.Contains("X-Decryption-Key")) throw new InvalidOperationException("Cannot access user data, as decryption key has not been set");
       List<AttributeValue> data = await Get<List<AttributeValue>>($"users/{userId}/attributes");
       User entity = await Get<User>($"users/{userId}");
       foreach(AttributeValue attr in data) {
@@ -150,6 +152,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="attribute"> The attribute to retrieve </param>
     /// <returns> A list of matching attributes </returns>
     public async Task<List<AttributeValue>> GetUserAttributeAsync(string userId, string attribute) {
+      if(!headers.Contains("X-Decryption-Key")) throw new InvalidOperationException("Cannot access data, as decryption key has not been set");
       return await Get<List<AttributeValue>>($"users/{userId}/attributes/{attribute}");
     }
 
@@ -158,7 +161,7 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     /// <param name="entity">An entity or user object that has been modified locally</param>
     public async Task SaveAsync(Entity entity) {
-      
+      if(!headers.Contains("X-Encryption-Key")) throw new InvalidOperationException("Cannot store data, as encryption key has not been set");
       await Task.WhenAll(from attribute in entity.DeletedAttributes select Delete($"users/{entity.Id}/attributes/{attribute}"));
       entity.DeletedAttributes.Clear();
 
@@ -304,6 +307,7 @@ namespace IO.Anontech.Vizivault {
     /// <param name="dataPointId">The datapoint id of the attribute to retrieve</param>
     /// <returns>An attribute with the specified datapoint id, if one exists</returns>
     public async Task<AttributeValue> GetDataPointAsync(string dataPointId) {
+      if(!headers.Contains("X-Decryption-Key")) throw new InvalidOperationException("Cannot access data, as decryption key has not been set");
       return await Get<AttributeValue>($"data/{dataPointId}");
     }
   }
