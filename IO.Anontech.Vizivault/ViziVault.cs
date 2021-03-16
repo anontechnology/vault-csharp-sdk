@@ -212,6 +212,20 @@ namespace IO.Anontech.Vizivault {
     }
 
     /// <summary>
+    /// Removes an attribute definition from the system if there is no data associated with it.
+    /// </summary>
+    /// <param name="attribute">The name of the attribute to delete</param>
+    /// <returns>A boolean value representing whether the attribute was deleted successfully</returns>
+    public async Task<bool> DeleteAttributeDefinitionAsync(String attribute) {
+      try{
+        await Delete($"attributes/{attribute}");
+        return true;
+      } catch(VaultResponseException) {
+        return false;
+      }
+    }
+
+    /// <summary>
     /// Creates or modifies a tag.
     /// </summary>
     /// <param name="tag">A tag metadata object, which will be saved in the vault</param>
