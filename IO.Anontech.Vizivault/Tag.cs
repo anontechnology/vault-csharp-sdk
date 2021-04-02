@@ -12,9 +12,9 @@ namespace IO.Anontech.Vizivault {
     /// </summary>
     public string Name {get; set;}
 
-    public DateTime CreatedDate {get; set;}
+    public DateTime? CreatedDate {get; set;}
 
-    public DateTime ModifiedDate {get; set;}
+    public DateTime? ModifiedDate {get; set;}
 
     public Tag(string name) {
       this.Name = name;

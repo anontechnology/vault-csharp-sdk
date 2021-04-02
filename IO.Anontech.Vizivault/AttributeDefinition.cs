@@ -53,13 +53,13 @@ namespace IO.Anontech.Vizivault {
     /// When this attribute was created.
     /// This property is maintained by the vault and does not usually need to be changed.
     /// </summary>
-    public DateTime CreatedDate {get; set;}
+    public DateTime? CreatedDate {get; set;}
     
     /// <summary>
     /// When this attribute was last modified.
     /// This property is maintained by the vault and does not usually need to be changed.
     /// </summary>
-    public DateTime ModifiedDate {get; set;}
+    public DateTime? ModifiedDate {get; set;}
 
     /// <summary>
     /// A list of tags that should be applied to all attributes under this definition.

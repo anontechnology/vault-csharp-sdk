@@ -51,12 +51,12 @@ namespace IO.Anontech.Vizivault {
     /// <summary>
     /// When this attribute was first stored in the vault
     /// </summary>
-    public DateTime CreatedDate {get; internal set;}
+    public DateTime? CreatedDate {get; internal set;}
 
     /// <summary>
     /// When this attribute was most recently modified
     /// </summary>
-    public DateTime ModifiedDate {get; internal set;}
+    public DateTime? ModifiedDate {get; internal set;}
 
     internal AttributeValue() {
       Regulations = new List<string>();

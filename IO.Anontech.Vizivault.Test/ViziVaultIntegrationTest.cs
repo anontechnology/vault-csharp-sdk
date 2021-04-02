@@ -162,6 +162,9 @@ namespace IO.Anontech.Vizivault.Test {
           (tag) => Assert.Equal("tag3", tag)
         );
 
+        Tag tag1 = await vault.GetTagAsync("tag1");
+        await vault.StoreTagAsync(tag1);
+
         Tag tag4 = new Tag("tag4");
         await vault.StoreTagAsync(tag4);
 

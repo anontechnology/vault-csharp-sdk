@@ -10,7 +10,7 @@ namespace IO.Anontech.Vizivault {
     }
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options) {
-      writer.WriteStringValue(value.ToString("yyyy-MM-dd'T'HH:mm:sszzz"));
+      writer.WriteStringValue(value.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ss.fffZ"));
     }
   }
 }

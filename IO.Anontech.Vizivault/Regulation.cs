@@ -9,7 +9,7 @@ namespace IO.Anontech.Vizivault {
 
     public RegulationRule Rule {get; set;}
 
-    public DateTime CreatedDate {get; set;}
-    public DateTime ModifiedDate {get; set;}
+    public DateTime? CreatedDate {get; set;}
+    public DateTime? ModifiedDate {get; set;}
   }
 }
