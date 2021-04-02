@@ -5,7 +5,7 @@ namespace IO.Anontech.Vizivault.Tagging {
   public class UserRule : RegulationRule {
 
     public enum UserValuePredicate {
-      Eq, Neq, Lt, Gt, Leq, Geq, Before, After
+      Eq, Neq, Lt, Gt, Leq, Geq, Before, After, In, Nin
     }
     
     public string Attribute {get; set;}
