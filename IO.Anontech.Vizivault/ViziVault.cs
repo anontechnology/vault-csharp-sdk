@@ -324,5 +324,13 @@ namespace IO.Anontech.Vizivault {
       if(!headers.Contains("X-Decryption-Key")) throw new InvalidOperationException("Cannot access data, as decryption key has not been set");
       return await Get<AttributeValue>($"data/{dataPointId}");
     }
+
+    /// <summary>
+    /// Deletes a single attribute from the vault that matches a datapoint id
+    /// </summary>
+    /// <param name="dataPointId">The datapoint id of the attribute to delete</param>
+    public async Task DeleteDataPointAsync(string dataPointId) {
+      await Delete($"data/{dataPointId}");
+    }
   }
 }
